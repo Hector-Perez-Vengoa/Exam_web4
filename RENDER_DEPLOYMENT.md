@@ -1,5 +1,28 @@
 # Configuración para despliegue en Render
 
+## 🛠️ Solución a problemas de codificación
+
+Si encuentras errores como `MalformedInputException` durante el build, es debido a problemas de codificación en los archivos `.properties`. La solución incluye:
+
+1. **Archivos .properties**: Usar solo caracteres ASCII (sin acentos)
+2. **Configuración Maven**: UTF-8 configurado en `pom.xml`
+3. **Dockerfile**: Variables de entorno para codificación UTF-8
+
+## 🧪 Pruebas antes del despliegue
+
+Ejecuta estos comandos para verificar que todo funciona:
+
+```bash
+# Probar build local
+./test-build.sh    # Linux/Mac
+test-build.bat     # Windows
+
+# O manualmente
+cd Exam_Perez
+./mvnw clean package -DskipTests
+docker build -t test-backend .
+```
+
 ## Backend (Spring Boot)
 Para desplegar el backend en Render:
 
