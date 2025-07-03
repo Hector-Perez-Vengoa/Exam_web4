@@ -53,7 +53,14 @@
             <version>8.0.33</version>
         </dependency>
 
-        <!-- H2 Database para producción -->
+        <!-- PostgreSQL Database -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- H2 Database para desarrollo local -->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>

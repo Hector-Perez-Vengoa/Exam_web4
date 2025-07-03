@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  # Base de datos PostgreSQL para desarrollo
+  postgres-dev:
+    image: postgres:15-alpine
+    container_name: exam_perez_postgres_dev
+    environment:
+      - POSTGRES_DB=exam_perez_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  # Backend Spring Boot para desarrollo
+  backend-dev:
+    build: 
+      context: ./Exam_Perez
+      dockerfile: Dockerfile
+    container_name: exam_perez_backend_dev
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - JAVA_OPTS=-Xmx512m -Xms256m
+      - DATABASE_URL=jdbc:postgresql://postgres-dev:5432/exam_perez_db
+      - DATABASE_USERNAME=postgres
+      - DATABASE_PASSWORD=password
+    depends_on:
+      postgres-dev:
+        condition: service_healthy
+    volumes:
+      - ./Exam_Perez/src:/app/src
+    restart: unless-stopped
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  postgres_dev_data:
+    driver: local

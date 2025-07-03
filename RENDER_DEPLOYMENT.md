@@ -1,26 +1,35 @@
-# Configuración para despliegue en Render
+# Configuración para despliegue en Render con PostgreSQL
 
-## 🛠️ Solución a problemas de codificación
+## �️ Base de Datos PostgreSQL
 
-Si encuentras errores como `MalformedInputException` durante el build, es debido a problemas de codificación en los archivos `.properties`. La solución incluye:
+### Configuración en Render:
+1. **Crear PostgreSQL Database en Render**:
+   - Tipo: PostgreSQL
+   - Plan: Free (o el que prefieras)
+   - Región: Misma región que tu backend
+   - Versión: 15 (recomendado)
 
-1. **Archivos .properties**: Usar solo caracteres ASCII (sin acentos)
-2. **Configuración Maven**: UTF-8 configurado en `pom.xml`
-3. **Dockerfile**: Variables de entorno para codificación UTF-8
+2. **Obtener URL de conexión**:
+   - Render te proporcionará una URL como: `postgresql://user:password@host:port/database`
+
+### Variables de entorno para el backend:
+- `SPRING_PROFILES_ACTIVE=prod`
+- `JAVA_OPTS=-Xmx512m -Xms256m`
+- `DATABASE_URL=tu_url_de_postgresql_de_render`
+- `DATABASE_USERNAME=tu_usuario` (opcional si está en la URL)
+- `DATABASE_PASSWORD=tu_password` (opcional si está en la URL)
 
 ## 🧪 Pruebas antes del despliegue
 
 Ejecuta estos comandos para verificar que todo funciona:
 
 ```bash
-# Probar build local
+# Probar con PostgreSQL local
+docker-compose -f docker-compose.dev.yml up --build
+
+# Probar build para producción
 ./test-build.sh    # Linux/Mac
 test-build.bat     # Windows
-
-# O manualmente
-cd Exam_Perez
-./mvnw clean package -DskipTests
-docker build -t test-backend .
 ```
 
 ## Backend (Spring Boot)
@@ -32,6 +41,7 @@ Para desplegar el backend en Render:
 4. **Variables de entorno**:
    - `SPRING_PROFILES_ACTIVE=prod`
    - `JAVA_OPTS=-Xmx512m -Xms256m`
+   - `DATABASE_URL=postgresql://user:password@host:port/database`
    - `PORT=8080`
 
 ## Frontend (React/Vite)

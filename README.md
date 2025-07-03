@@ -3,16 +3,22 @@
 Este proyecto contiene una aplicación full stack con:
 - **Backend**: Spring Boot (Java 17) con API REST
 - **Frontend**: React + Vite con Tailwind CSS
-- **Base de datos**: H2 en memoria (producción) / MySQL (desarrollo)
+- **Base de datos**: PostgreSQL (producción) / H2 (desarrollo local)
+- **Containerización**: Docker y Docker Compose
 
 ## 🚀 Despliegue en Render
 
-### Opción 1: Despliegue Automático
-1. Haz fork de este repositorio
-2. Conecta tu repositorio a Render
-3. Sigue las instrucciones en `RENDER_DEPLOYMENT.md`
+### Prerrequisitos en Render:
+1. **PostgreSQL Database**: Crear una base de datos PostgreSQL en Render
+2. **Web Service**: Para el backend
+3. **Static Site**: Para el frontend
 
-### Opción 2: Despliegue Manual
+### Pasos de despliegue:
+1. Crear PostgreSQL Database en Render
+2. Copiar la URL de conexión de PostgreSQL
+3. Desplegar el backend con las variables de entorno correspondientes
+4. Desplegar el frontend apuntando al backend
+
 Ver documentación detallada en `RENDER_DEPLOYMENT.md`
 
 ## 🛠️ Desarrollo Local
@@ -27,18 +33,23 @@ Ver documentación detallada en `RENDER_DEPLOYMENT.md`
 git clone <tu-repo>
 cd <directorio-del-proyecto>
 
-# Ejecutar con Docker Compose
+# Ejecutar con PostgreSQL (recomendado)
 docker-compose up --build
 
-# O usar el script de inicio
+# O usar el script de inicio interactivo
 ./start-dev.sh    # Linux/Mac
 start-dev.bat     # Windows
 ```
+
+### Opciones de base de datos:
+- **PostgreSQL**: Persistente, ideal para desarrollo y producción
+- **H2**: En memoria, solo para pruebas rápidas
 
 ### URLs locales
 - **Frontend**: http://localhost
 - **Backend**: http://localhost:8080
 - **API Docs**: http://localhost:8080/swagger-ui.html
+- **PostgreSQL**: localhost:5432 (postgres/password)
 
 ## 📁 Estructura del proyecto
 
