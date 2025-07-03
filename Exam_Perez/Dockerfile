@@ -19,6 +19,32 @@ RUN mvn clean package -DskipTests -B -q
 # Etapa de ejecución
 FROM amazoncorretto:17-alpine-jdk
 
+# Crear usuario no root para seguridad
+RUN addgroup -g 1001 -S appgroup && \
+    adduser -S appuser -u 1001 -G appgroup
+
+# Establecer directorio de trabajo
+WORKDIR /app
+
+# Copiar el jar desde la etapa de construcción
+COPY --from=build /app/target/*.jar app.jar
+
+# Cambiar propietario de los archivos
+RUN chown -R appuser:appgroup /app
+
+# Cambiar al usuario no root
+USER appuser
+
+# Exponer puerto
+EXPOSE 8080
+
+# Variables de entorno para producción
+ENV SPRING_PROFILES_ACTIVE=prod
+ENV JAVA_OPTS="-Xmx512m -Xms256m"
+
+# Comando para ejecutar la aplicación
+CMD ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
+
 # Agregar usuario no-root por seguridad
 RUN addgroup -g 1000 appuser && adduser -u 1000 -G appuser -s /bin/sh -D appuser
 
